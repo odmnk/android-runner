@@ -242,7 +242,7 @@ In case of an error or a user abort during experiment execution, it is possible 
 ```python3 android_runner your_config.json --progress path/to/progress.xml```
 
 ## Compatible Devices
-The table below shows on which mobile devices Android Runner has been tested and its corresponding compatibility.
+The table below shows on which mobile devices Android Runner was tested and whether there are any known issues.
 
 | Device                 | Compatibility                                                                                                                                                                       |
 |------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------                                 |

@@ -241,6 +241,15 @@ In case of an error or a user abort during experiment execution, it is possible 
 
 ```python3 android_runner your_config.json --progress path/to/progress.xml```
 
+## Compatible Devices
+The table below shows on which mobile devices Android Runner has been tested and its corresponding compatibility.
+
+| Device                 | Compatibility                                                                                                                                                                       |
+|------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------                                 |
+| Google Nexus 5X        | No issues                                                                                                                                                                                    |
+| LG G6                  | No issues                                                                                                                                                                           |
+| Motorola Moto G5S Plus | BatteryStats is not available as APKTool can't disassemble the retrieved APK. See more [here](https://github.com/iBotPeaches/Apktool/issues/1420/). Trepn works without any issues. |
+
 ## Detailed documentation
 The original thesis can be found here:
 https://drive.google.com/file/d/0B7Fel9yGl5-xc2lEWmNVYkU5d2c/view?usp=sharing

@@ -290,11 +290,12 @@ In case of an error or a user abort during experiment execution, it is possible 
 ```python3 android_runner your_config.json --progress path/to/progress.xml```
 
 ## Compatible Devices
-The table below shows on which mobile devices Android Runner was tested and whether there are any known issues.
-
-| Device                 | Compatibility                                                                                                                                                                       |
-|------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------                                 |
-| Google Nexus 5X        | No issues                                                                                                                                                                                    |
-| LG G6                  | No issues                                                                                                                                                                           |
-| Motorola Moto G5S Plus | BatteryStats is not available as APKTool can't disassemble the retrieved APK. See more [here](https://github.com/iBotPeaches/Apktool/issues/1420/). Trepn works without any issues. |
+The table below shows on which mobile devices Android Runner and its profilers were tested and whether there are any known issues.
+| Device/Profiler             	| Trepn                                                	| BatteryStats 	| Perfetto*      	|
+|-----------------------------	|------------------------------------------------------	|--------------	|----------------	|
+| LG Nexus 5X (Android 8.1.0) 	| No, energy consumption measurements always return 0. 	| Yes          	| Not applicable 	|
+| Samsung Galaxy J7 Duo       	| No, energy consumption measurements always return 0. 	| Yes          	| Not applicable 	|
+| Google Pixel 3              	| No, energy consumption measurements always return 0. 	| Yes          	| Yes            	|
+| Google Pixel 5G             	| No, energy consumption measurements always return 0. 	| Yes          	| Yes            	|
+* Please note that Perfetto may not be suited for doing energy consumption measurements, see [https://github.com/S2-group/android-runner/tree/master/AndroidRunner/Plugins/perfetto#limitations-issues--caveats](here).
 

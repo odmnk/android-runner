@@ -32,19 +32,26 @@ class StopRunWebserver(BaseHTTPRequestHandler):
         if self.headers["Content-Length"] != None and int(self.headers["Content-Length"]) > 0:
             content_length = int(self.headers['Content-Length'])
             post_data = self.rfile.read(content_length)
+            print(paths.paths_dict())
 
-            dir_path = op.join(paths.OUTPUT_DIR, "http_post_request_payloads") 
-            makedirs(dir_path)
+            full = paths.OUTPUT_DIR.split("/")
+            device = full[-3]
+            subject = full[-2]
+            browser = full[-1]
+            data = post_data.decode("utf-8")
 
-            file_ = datetime.datetime.now().strftime("%Y_%m_%dT%H_%M_%S_%f")
-            if self.headers["Content-type"] == "application/json":
-                filename = op.join(dir_path, f"{file_}.json")
-            else:
-                filename = op.join(dir_path, f"{file_}.txt")
+            dir_path = op.join(paths.BASE_OUTPUT_DIR, "http_post_request_payloads.txt") 
+            # makedirs(dir_path)
 
-            with open(filename, 'w+') as opened_file:
-                opened_file.write(post_data.decode("utf-8"))
-                self.logger.info(f"Wrote HTTP POST request payload to {filename}")
+            # file_ = datetime.datetime.now().strftime("%Y_%m_%dT%H_%M_%S_%f")
+            # if self.headers["Content-type"] == "application/json":
+            #     filename = op.join(dir_path, f"{file_}.json")
+            # else:
+            #     filename = op.join(dir_path, f"{file_}.txt")
+
+            with open(dir_path, 'a+') as opened_file:
+                opened_file.write(f"{device}, {subject}, {browser}, {data}\n")
+                self.logger.info(f"Wrote HTTP POST request payload")
         else:
             self.logger.info("Received HTP POST request did not contain a payload.")
 

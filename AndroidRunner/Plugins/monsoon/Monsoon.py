@@ -3,8 +3,10 @@ import os
 import os.path as op
 import time
 from collections import OrderedDict
-
+import datetime
+import subprocess
 from AndroidRunner import util
+from AndroidRunner import Adb
 from AndroidRunner.Plugins.Profiler import Profiler
 from AndroidRunner.Plugins.monsoon.script.power_device import power_meter
 
@@ -15,6 +17,20 @@ class Monsoon(Profiler):
         self.paths = paths
         self.profile = False
         self.data_points = ["energy_joules", "duration_ms", "error_flag"]
+        power_meter.monsoon_usb_enabled(True)
+
+
+    def send_command(self, id, cmd):
+        proc = subprocess.Popen(["adb", "-s", "01ca4c64db5d1014", "shell",  cmd],
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = proc.communicate() 
+        print("Jaaa returned")
+        out = out.decode('ascii')
+        print(out)
+        if err:
+            err = err.decode("ascii")
+            print(err)
+        time.sleep(5)
 
     def dependencies(self):
         return []
@@ -22,26 +38,61 @@ class Monsoon(Profiler):
     def load(self, device):
         return
 
+    def set_file(self, value):
+        profiling_file = "/home/omar/profiling.txt"
+        with open(profiling_file, 'w') as filetowrite:
+            filetowrite.write(value)
+
     def start_profiling(self, device, **kwargs):
         """Start the profiling process"""
 
         # Quickly let the mobile device sleep and wake up so a run can take up to 30 minutes.
-        device.shell("input keyevent KEYCODE_SLEEP")
-        device.shell("input keyevent KEYCODE_WAKEUP")
+        # print("Sleep before profiling")
+        # # device.shell("input keyevent KEYCODE_SLEEP")
+        # self.send_command("01ca4c64db5d1014", "input keyevent KEYCODE_SLEEP")
+        # print("Wake up before profiling")
+        # self.send_command("01ca4c64db5d1014", "input keyevent KEYCODE_WAKEUP")
+        # self.send_command("01ca4c64db5d1014", "input touchscreen swipe 530 1420 530 1120")
+        # self.send_command("01ca4c64db5d1014", "input text 0000")
+        # self.send_command("01ca4c64db5d1014", "input keyevent 66")
+        # print("Wait for 5 seconds to be sure")
+        # print("Wait for 5 secs after stopping profiling")
+        # print("disbale USB Monsoon")
+
+        self.set_file("1")
+
+
+        power_meter.monsoon_usb_enabled(False)
         time.sleep(5)
+        print("Really Start Profiling Now")
+        self.start = datetime.datetime.now()
         self.profile = True
         power_meter.start()
 
     def stop_profiling(self, device, **kwargs):
         """Stop the profiling process"""
         self.results = power_meter.stop()
+        self.end = datetime.datetime.now()
+        delta = self.end - self.start 
+        final = delta.total_seconds() * 1000
+        print("Tijd ertussen", final)
         self.profile = False
-
+        print("Wait for 5 secs after stopping profiling")
+        # print("enable USB Monsoon")
+        power_meter.monsoon_usb_enabled(True)
+        self.set_file("0")
+        time.sleep(5)
         # Quickly let the mobile device sleep and wake up so the device is awake for 30 minutes.
         # This solves the issue of certain commands sent to the device blocking the execution of the program.
-        device.shell("input keyevent KEYCODE_SLEEP")
-        device.shell("input keyevent KEYCODE_WAKEUP")
-        time.sleep(5)
+        # print("Sleep after profiling")
+        # device.shell("input keyevent KEYCODE_SLEEP")
+        # device.shell("input keyevent KEYCODE_WAKEUP")
+        # device.shell("input touchscreen swipe 530 1420 530 1120")
+        # device.shell("input text 0000")
+        # device.shell("input keyevent 66")
+        # time.sleep(5)
+        # print("Woken up")
+
 
     def collect_results(self, device):
         """Collect the data and clean up extra files on the device, save data in location set by 'set_output' """
@@ -64,7 +115,9 @@ class Monsoon(Profiler):
         with open(op.join(self.output_dir, 'aggregated.csv'), 'w+') as output:
             writer = csv.writer(output)
             writer.writerow(self.data_points)
-            for output_file in os.listdir(self.output_dir):
+
+            # Write data for each run to file in ascending order (oldest run first, newest run last).
+            for output_file in sorted(os.listdir(self.output_dir), reverse=False):
                 if output_file.startswith("monsoon_"):
                     res = open(op.join(self.output_dir, output_file)).readlines()[1]
                     res = res.rstrip()

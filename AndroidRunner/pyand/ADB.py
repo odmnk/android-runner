@@ -72,8 +72,25 @@ class ADB(object):
         a.insert(0, self.__adb_path)
         if self.__target is not None:
             # add target device arguments to the command
+
+
+            profiling_file = "/home/omar/profiling.txt"
+            with open(profiling_file) as filetowrite:
+                content = filetowrite.read()
+
+            print("profiling: ", content)
+
+            if content == "1\n" or content == "1":
+                self.__target = "192.168.2.10:5555"
+            else:
+                self.__target = "01ca4c64db5d1014"
+            print("after")
+
             a.insert(1, '-s')
             a.insert(2, self.__target)
+
+            print(self.__target)
+            print(a)
 
         return a
 

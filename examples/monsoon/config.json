@@ -3,19 +3,20 @@
   "devices": {
     "nexus5x": {
       "power_device": {
-        "script_path": "my_path/androidrunner/android-runner/AndroidRunner/Plugins/monsoon/script/power_device.py",
-        "py_path": "python3",
+        "script_path": "/home/omar/android-runner/AndroidRunner/Plugins/monsoon/script/power_device.py",
+        "py_path": "/home/omar/android-runner/.venv/bin/python",
         "vout": "3.8",
         "serial_num": "23171"
         }
     }
   },
+  "run_stopping_condition" : {"post_request" : {}},
   "clear_cache": true,
-  "repetitions": 3,
-  "duration": 180000,
-  "browsers": ["firefox"],
+  "repetitions": 5,
+  "duration": 120000,
+  "browsers": ["chrome"],
   "paths": [
-    "https://google.com/"
+    "https://amc.nl/"
  ],
   "profilers":{
     "monsoon": {
@@ -29,5 +30,5 @@
     "after_run": "scripts/after_run.py",
     "after_experiment": "scripts/after_experiment.py"
   },
-  "time_between_run": 120000
+  "time_between_run": 3000
 }
